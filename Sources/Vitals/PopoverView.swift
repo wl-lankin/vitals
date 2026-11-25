@@ -127,6 +127,7 @@ struct TimeRail: View {
 }
 
 struct FooterView: View {
+    @ObservedObject private var updater = Updater.shared
     @State private var hover = false
 
     var body: some View {
@@ -142,6 +143,17 @@ struct FooterView: View {
             .buttonStyle(.plain)
             .onHover { hover = $0 }
             Spacer()
+            if case .ready(let version) = updater.state {
+                Button {
+                    updater.relaunch()
+                } label: {
+                    Label("\(version) bereit · Neu starten", systemImage: "arrow.down.circle.fill")
+                        .font(.system(size: 11.5, weight: .semibold))
+                        .foregroundStyle(Tone.processor)
+                }
+                .buttonStyle(.plain)
+                .help("Vitals wurde aktualisiert und startet neu")
+            }
             SettingsMenu()
         }
         .padding(.horizontal, Metrics.inset)
@@ -154,6 +166,18 @@ struct SettingsMenu: View {
     @AppStorage("barStyle") private var barStyle = BarStyle.icon.rawValue
     @AppStorage("animations") private var animations = true
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
+    @State private var updateState: Updater.State = .idle
+
+    private var updateLabel: String {
+        switch updateState {
+        case .checking: "Suche nach Updates …"
+        case .upToDate: "Vitals ist aktuell (\(Updater.shared.currentVersion))"
+        case .downloading(let v): "Lade Version \(v) …"
+        case .ready(let v): "Version \(v) ist bereit"
+        case .failed(let m): "Update fehlgeschlagen: \(m)"
+        case .idle: "Nach Updates suchen …"
+        }
+    }
 
     var body: some View {
         Menu {
@@ -176,15 +200,17 @@ struct SettingsMenu: View {
                     launchAtLogin = SMAppService.mainApp.status == .enabled
                 }))
             Divider()
-            Button("Vitals \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "") beenden") {
-                NSApp.terminate(nil)
-            }
-            .keyboardShortcut("q")
+            Button(updateLabel) { Task { await Updater.shared.check(manual: true) } }
+                .disabled(!Updater.shared.isEnabled)
+            Divider()
+            Button("Vitals \(Updater.shared.currentVersion) beenden") { NSApp.terminate(nil) }
+                .keyboardShortcut("q")
         } label: {
             Image(systemName: "slider.horizontal.3")
                 .font(.system(size: 13, weight: .medium))
         }
         .menuStyle(.borderlessButton)
+        .onReceive(Updater.shared.$state) { updateState = $0 }
         .menuIndicator(.hidden)
         .fixedSize()
         .help("Einstellungen")

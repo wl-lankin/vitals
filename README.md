@@ -2,6 +2,10 @@
 
 Die Lebenszeichen deines Mac in der Menüleiste: Prozessor, Speicher, Laufwerke, Netzwerk und Akku in einem Fenster, jedes mit seiner Kurve auf einer gemeinsamen Zeitachse.
 
+**Download:** https://github.com/wl-lankin/vitals/releases/latest/download/Vitals-macOS.dmg (macOS 14 oder neuer, Apple Silicon und Intel)
+
+Kostenlos und Open Source unter der [MIT-Lizenz](LICENSE).
+
 ## Was das Fenster kann
 
 - **Zustand in einem Satz.** Oben steht, wie es dem Mac geht („Entspannt“, „Unter Last“, „Speicher wird knapp“) und woran es liegt, z. B. welche App gerade am meisten belegt.
@@ -10,16 +14,22 @@ Die Lebenszeichen deines Mac in der Menüleiste: Prozessor, Speicher, Laufwerke,
 - **Apps statt Prozesse.** Hilfsprozesse zählen zu ihrer App, ein Browser mit 70 Prozessen ist eine Zeile.
 - **Laufwerke.** Klick öffnet das Laufwerk im Finder, externe Laufwerke lassen sich direkt auswerfen.
 - **Menüleiste.** Das Symbol ist ein Herzschlag, der mit der Prozessorlast stärker ausschlägt. Auf Wunsch steht ein Wert daneben (Prozessor, Speicher, Netzwerk oder Verbrauch).
+- **Updates.** Vitals aktualisiert sich selbst über GitHub-Releases, siehe [docs/RELEASE.md](docs/RELEASE.md).
+
+Alles bleibt auf dem Mac, es gibt kein Konto und keinen Server. Ins Netz geht Vitals nur für die Update-Prüfung.
 
 ## Bauen und starten
 
 ```sh
-./build.sh            # build/Vitals.app
-./build.sh install    # zusätzlich nach /Applications kopieren und starten
-swift test            # Tests
+./build.sh                  # build/Vitals.app
+./build.sh install          # zusätzlich nach /Applications kopieren und starten
+./build.sh release 1.1.0    # Universal-App, DMG, Update-ZIP und latest.json in dist/
+swift test                  # Tests
 ```
 
-Voraussetzung: macOS 14 oder neuer, Xcode-Kommandozeilenwerkzeuge. Keine fremden Abhängigkeiten.
+Voraussetzung: macOS 14 oder neuer zum Ausführen, Xcode 26 oder neuer zum Bauen. Keine fremden Abhängigkeiten.
+
+Signiert wird mit dem Vitals-Zertifikat aus `~/.vitals/`, ohne dieses ad-hoc. Release-Ablauf und Schlüssel: [docs/RELEASE.md](docs/RELEASE.md).
 
 Zum Ausprobieren ohne echte Daten:
 
@@ -50,6 +60,7 @@ Die Ziffern rollen über eine eigene Ansicht (`RollingText`), nicht über `.cont
 
 ## Bekannte Grenzen
 
+- **Nicht notarisiert.** Beim ersten Öffnen warnt macOS, siehe [docs/RELEASE.md](docs/RELEASE.md).
 - Der Speicher von Systemprozessen anderer Benutzer (z. B. WindowServer) lässt sich ohne Sonderrechte nur ungefähr lesen und fällt zu klein aus.
 - Die CPU-Temperatur kommt über eine nicht dokumentierte Schnittstelle; wo sie fehlt, wird der Wert einfach nicht angezeigt.
 - Der Verlauf lebt nur im Arbeitsspeicher und beginnt nach jedem Start neu.

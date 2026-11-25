@@ -12,6 +12,7 @@ struct VitalsApp: App {
         }
         Snapshot.runIfRequested(makeSource: AppDelegate.makeSource)
         Snapshot.soakIfRequested(makeSource: AppDelegate.makeSource)
+        Updater.shared.start()
     }
 
     var body: some Scene {
