@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1
+
+- Heller Modus: Über einem dunklen Fenster wurde das Vitals-Fenster grau, und Grün, Orange und die übrigen Farben waren schwer zu erkennen. Das Fenster bleibt jetzt hell, und alle Farben sind kräftiger.
+- Die Kurven sind im hellen Modus etwas dicker.
+- „läuft seit …“ und „jetzt“ sind besser lesbar.
+
 ## 1.0.0
 
 Erste Version von Vitals, den Lebenszeichen des Mac in der Menüleiste.

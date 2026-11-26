@@ -35,7 +35,7 @@ Zum Ausprobieren ohne echte Daten:
 
 ```sh
 build/Vitals.app/Contents/MacOS/Vitals --demo                      # erfundene Werte
-build/Vitals.app/Contents/MacOS/Vitals --snapshot <Ordner> [main|processor|memory|network|power|scrub] [--real]
+build/Vitals.app/Contents/MacOS/Vitals --snapshot <Ordner> [main|processor|memory|network|power|scrub] [--real] [--backdrop 8a8a8e]
 ```
 
 `--snapshot` rendert das Fenster hell und dunkel als PNG und beendet sich, gut zum Prüfen von Änderungen an der Oberfläche.
