@@ -51,14 +51,17 @@ struct TraceLayer: View {
     let ys: [Double]
     let color: Color
     var fillOpacity = 0.26
+    @Environment(\.colorScheme) private var scheme
 
     var body: some View {
+        // A dark line on a light ground reads thinner than a bright one on dark; give it a little more.
+        let light = scheme == .light
         ZStack {
             TraceShape(xs: timeline.xs, ys: ys, starts: timeline.starts, closed: true)
-                .fill(LinearGradient(colors: [color.opacity(fillOpacity), color.opacity(0.02)],
+                .fill(LinearGradient(colors: [color.opacity(fillOpacity + (light ? 0.06 : 0)), color.opacity(0.02)],
                                      startPoint: .top, endPoint: .bottom))
             TraceShape(xs: timeline.xs, ys: ys, starts: timeline.starts)
-                .stroke(color, style: StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
+                .stroke(color, style: StrokeStyle(lineWidth: light ? 1.8 : 1.5, lineCap: .round, lineJoin: .round))
         }
     }
 }
@@ -194,8 +197,8 @@ struct MemoryTrace: View {
     @Environment(Monitor.self) private var monitor
 
     static let app = Tone.memory
-    static let wired = Color(light: 0x4B5FD6, dark: 0x8C9BFF)
-    static let compressed = Color(light: 0x2CA6B8, dark: 0x79E0EE)
+    static let wired = Color(light: 0x3A4CC4, dark: 0x8C9BFF)
+    static let compressed = Color(light: 0x147E90, dark: 0x79E0EE)
 
     var body: some View {
         let timeline = monitor.timeline

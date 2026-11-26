@@ -23,13 +23,27 @@ extension Color {
 
 /// One hue per vital sign, the way a patient monitor tells its traces apart.
 enum Tone {
-    static let processor = Color(light: 0x0C9A66, dark: 0x4FE3A6)
-    static let memory = Color(light: 0x2273DC, dark: 0x62B4FF)
-    static let disks = Color(light: 0x7650DC, dark: 0xB7A0FF)
-    static let network = Color(light: 0xC97A06, dark: 0xFFC253)
-    static let power = Color(light: 0xD63A77, dark: 0xFF82B0)
-    static let warning = Color(light: 0xD4700C, dark: 0xFFA23E)
-    static let alert = Color(light: 0xD43535, dark: 0xFF6B62)
+    // The light values are deliberately deep: the popover material is translucent, and over a dark
+    // window it turns grey. Each of them keeps at least 4.5:1 against white and stays readable on grey.
+    static let processor = Color(light: 0x06713F, dark: 0x4FE3A6)
+    static let memory = Color(light: 0x1B5FCC, dark: 0x62B4FF)
+    static let disks = Color(light: 0x5B36C9, dark: 0xB7A0FF)
+    static let network = Color(light: 0x96590A, dark: 0xFFC253)
+    static let power = Color(light: 0xC2185B, dark: 0xFF82B0)
+    static let warning = Color(light: 0xC2410C, dark: 0xFFA23E)
+    static let alert = Color(light: 0xC81E1E, dark: 0xFF6B62)
+}
+
+/// In light mode the popover material turns grey when a dark window lies behind it, and everything on
+/// it loses contrast. A veil of white keeps the surface light whatever is underneath.
+struct PanelVeil: View {
+    @Environment(\.colorScheme) private var scheme
+
+    var body: some View {
+        Rectangle()
+            .fill(scheme == .dark ? Color.clear : Color.white.opacity(0.52))
+            .allowsHitTesting(false)
+    }
 }
 
 extension Verdict.Level {

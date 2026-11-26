@@ -89,10 +89,23 @@ enum Snapshot {
         let window = NSWindow(contentRect: NSRect(origin: CGPoint(x: -4000, y: -4000), size: size),
                               styleMask: .borderless, backing: .buffered, defer: false)
         window.appearance = appearance
-        let effect = NSVisualEffectView(frame: NSRect(origin: .zero, size: size))
-        effect.material = .popover
-        effect.state = .active
-        effect.blendingMode = .behindWindow
+        // `--backdrop 9a9a9e` paints a flat colour in place of the material. The material cannot be
+        // captured blending with what lies behind it, and the grey it turns over a dark window is
+        // exactly the case worth checking.
+        let args = CommandLine.arguments
+        let effect: NSView
+        if let i = args.firstIndex(of: "--backdrop"), i + 1 < args.count, let hex = UInt32(args[i + 1], radix: 16) {
+            let plain = NSView(frame: NSRect(origin: .zero, size: size))
+            plain.wantsLayer = true
+            plain.layer?.backgroundColor = NSColor(hex: hex).cgColor
+            effect = plain
+        } else {
+            let material = NSVisualEffectView(frame: NSRect(origin: .zero, size: size))
+            material.material = .popover
+            material.state = .active
+            material.blendingMode = .behindWindow
+            effect = material
+        }
         host.frame = effect.bounds
         effect.addSubview(host)
         window.contentView = effect

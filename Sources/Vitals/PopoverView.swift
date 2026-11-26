@@ -26,6 +26,7 @@ struct PopoverView: View {
         }
         .frame(width: Metrics.width)
         .background(alignment: .top) { Aura(color: monitor.verdict.level.color) }
+        .background { PanelVeil() }
     }
 }
 
@@ -54,7 +55,7 @@ struct HeaderView: View {
                 Spacer(minLength: 4)
                 Text("läuft seit \(Fmt.duration(monitor.uptime))")
                     .font(.system(size: 11.5, weight: .medium))
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(.secondary)
                     .monospacedDigit()
                     .fixedSize()
                     .help("Seit dem letzten Neustart des Mac")
@@ -104,7 +105,7 @@ struct TimeRail: View {
                     Spacer()
                     Text("jetzt")
                         .font(.system(size: 11, weight: .medium))
-                        .foregroundStyle(.tertiary)
+                        .foregroundStyle(.secondary)
                 }
                 .opacity(monitor.isLive ? 1 : 0)
 
